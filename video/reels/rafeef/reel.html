@@ -4,323 +4,470 @@
 <meta charset="utf-8">
 <style>
 @font-face { font-family: Ruqaa; src: url(../../assets/fonts/aref-ruqaa-arabic-700-normal.ttf); }
-@font-face { font-family: Amiri; font-weight: 400; src: url(../../assets/fonts/amiri-arabic-400-normal.ttf); }
-@font-face { font-family: Amiri; font-weight: 700; src: url(../../assets/fonts/amiri-arabic-700-normal.ttf); }
-html, body { margin: 0; padding: 0; }
-#stage {
-  position: relative; width: 1080px; height: 1920px; overflow: hidden;
-  background: radial-gradient(ellipse 70% 45% at 50% 48%, #fff8fa 0%, #fffdfb 55%, #fdf8f3 100%);
-}
-#flora, #fx { position: absolute; inset: 0; }
+@font-face { font-family: Almarai; font-weight: 400; src: url(../../assets/fonts/almarai-arabic-400-normal.woff2); }
+@font-face { font-family: Almarai; font-weight: 700; src: url(../../assets/fonts/almarai-arabic-700-normal.woff2); }
+@font-face { font-family: Cormorant; font-style: italic; font-weight: 500; src: url(../../assets/fonts/cormorant-garamond-latin-500-italic.woff2); }
+html, body { margin: 0; padding: 0; background: #fff; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #fbeff1; }
+canvas { position: absolute; inset: 0; }
 .line {
-  position: absolute; left: 0; right: 0; text-align: center;
-  font-family: Amiri; color: #8a6b74; white-space: nowrap; will-change: transform, opacity;
+  position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap;
+  font-family: Almarai; font-weight: 700; color: #c47b95; will-change: transform, opacity;
 }
-.body { font-size: 68px; font-weight: 700; color: #7c5a64; }
-.small { font-size: 50px; font-weight: 400; color: #9a7d85; }
-.title { font-family: Ruqaa; font-size: 92px; color: #c27f99; }
-.boy { font-family: Ruqaa; font-size: 200px; color: #7fa7c6; text-shadow: 0 6px 26px rgba(127,167,198,.28); }
-.dua { font-size: 62px; font-weight: 700; color: #7c5a64; }
-#name {
-  position: absolute; width: 860px; height: 354px; left: 110px; top: 780px;
+.ruqaa { font-family: Ruqaa; font-weight: 700; color: #c4809a; font-size: 74px; }
+.boy { font-family: Ruqaa; font-size: 150px; color: #86aecb; text-shadow: 0 4px 24px rgba(134,174,203,.30); }
+.body { font-size: 50px; }
+.sub { font-size: 44px; font-weight: 400; color: #b98096; }
+.dua { font-size: 44px; color: #c07893; }
+.en { font-family: Cormorant; font-style: italic; font-weight: 500; font-size: 46px; color: #c9909f;
+      letter-spacing: 3px; direction: ltr; }
+.wipe { -webkit-mask-image: linear-gradient(to left, #000 var(--a), transparent var(--b)); }
+#nameReveal { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+#name, #nameGlow {
+  position: absolute; width: 780px; height: 321px; left: 150px; top: 480px;
   -webkit-mask: url(name_mask.png) center / contain no-repeat;
-  mask: url(name_mask.png) center / contain no-repeat;
-  background: linear-gradient(100deg, #e7a6bd 0%, #d97f9f 30%, #f6c9d8 45%, #d97f9f 60%, #e7a6bd 100%);
-  background-size: 300% 100%;
 }
-#nameGlow {
-  position: absolute; width: 860px; height: 354px; left: 110px; top: 780px;
-  -webkit-mask: url(name_mask.png) center / contain no-repeat;
-  mask: url(name_mask.png) center / contain no-repeat;
-  background: #f4b3c8; filter: blur(22px);
-}
-.divider { position: absolute; left: 340px; width: 400px; height: 40px; }
+#name { background: linear-gradient(100deg, #d0789a 0%, #c5668b 35%, #f0b6c9 48%, #c5668b 60%, #d0789a 100%);
+        background-size: 320% 100%; }
+#nameGlow { background: #f2a9c1; filter: blur(20px); }
 </style>
 </head>
 <body>
 <div id="stage">
-  <svg id="flora" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+  <canvas id="bg" width="1080" height="1920"></canvas>
+  <canvas id="cv" width="1080" height="1920"></canvas>
   <div id="texts"></div>
-  <div id="nameWrap" style="position:absolute;inset:0;transform-origin:540px 957px">
-    <div id="nameGlow"></div>
-    <div id="name"></div>
+  <div id="nameWrap" style="position:absolute;inset:0;transform-origin:540px 640px">
+    <div id="nameReveal"><div id="nameGlow"></div><div id="name"></div></div>
   </div>
-  <svg id="fx" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+  <canvas id="fx" width="1080" height="1920"></canvas>
 </div>
 <script>
 'use strict';
-const NS = 'http://www.w3.org/2000/svg';
-const TOTAL = 39.0;
+const TOTAL = 24.3;
+const W = 1080, H = 1920;
 
 // ---------------------------------------------------------------- helpers
-let seed = 20261015;
+let seed = 77031;
 const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
 const R = (a, b) => a + (b - a) * rnd();
-const pick = arr => arr[Math.floor(rnd() * arr.length)];
+const pick = a => a[Math.floor(rnd() * a.length)];
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const lin = (t, a, b) => clamp((t - a) / (b - a));
 const easeOut = x => 1 - Math.pow(1 - x, 3);
 const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-const backOut = x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
-function el(tag, attrs, parent) {
-  const e = document.createElementNS(NS, tag);
-  for (const k in attrs) e.setAttribute(k, attrs[k]);
-  if (parent) parent.appendChild(e);
-  return e;
+const backOut = x => { const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+function canvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+
+// ---------------------------------------------------------------- watercolor sprites
+function softBlur(c, px) {
+  const o = canvas(c.width, c.height), x = o.getContext('2d');
+  x.filter = `blur(${px}px)`; x.drawImage(c, 0, 0); return o;
+}
+function petalPath(x, r0, r1, w) {
+  x.beginPath();
+  x.moveTo(r0, 0);
+  x.bezierCurveTo(r0 + (r1 - r0) * .35, -w, r1 - w * .6, -w * .9, r1, 0);
+  x.bezierCurveTo(r1 - w * .6, w * .9, r0 + (r1 - r0) * .35, w, r0, 0);
+}
+function gerbera(Rr, tone) {
+  const S = Math.ceil(Rr * 2.3), c = canvas(S, S), x = c.getContext('2d');
+  x.translate(S / 2, S / 2);
+  const [deep, mid, light] = tone;
+  for (let layer = 0; layer < 3; layer++) {
+    const n = 30 - layer * 6, len = Rr * (1 - layer * .2), w = Rr * (.11 - layer * .01);
+    const off = rnd() * 6;
+    for (let i = 0; i < n; i++) {
+      x.save();
+      x.rotate(i / n * Math.PI * 2 + off + R(-.04, .04));
+      const l = len * R(.9, 1.04);
+      const g = x.createLinearGradient(Rr * .15, 0, l, 0);
+      g.addColorStop(0, deep); g.addColorStop(.45, mid); g.addColorStop(1, light);
+      x.globalAlpha = .82;
+      petalPath(x, Rr * .14, l, w); x.fillStyle = g; x.fill();
+      x.globalAlpha = .22; x.lineWidth = 1.4; x.strokeStyle = deep; x.stroke();
+      x.globalAlpha = .35; x.beginPath(); x.moveTo(Rr * .25, 0); x.lineTo(l * .85, 0);
+      x.strokeStyle = '#ffffff'; x.lineWidth = 1.2; x.stroke();
+      x.restore();
+    }
+  }
+  x.globalAlpha = 1;
+  let g = x.createRadialGradient(0, 0, 0, 0, 0, Rr * .26);
+  g.addColorStop(0, '#d8d46a'); g.addColorStop(.45, '#f1c84f'); g.addColorStop(.8, '#e7a046'); g.addColorStop(1, 'rgba(214,120,70,0)');
+  x.fillStyle = g; x.beginPath(); x.arc(0, 0, Rr * .26, 0, 7); x.fill();
+  for (let i = 0; i < 40; i++) {
+    const a = R(0, 7), r = Rr * R(.1, .2);
+    x.fillStyle = pick(['#c0782f', '#e9b44c', '#a8662a']);
+    x.globalAlpha = .7; x.beginPath(); x.arc(Math.cos(a) * r, Math.sin(a) * r, Rr * .018, 0, 7); x.fill();
+  }
+  return softBlur(c, .7);
+}
+function chrysanthemum(Rr) {
+  const S = Math.ceil(Rr * 2.3), c = canvas(S, S), x = c.getContext('2d');
+  x.translate(S / 2, S / 2);
+  for (let layer = 0; layer < 5; layer++) {
+    const n = 34 - layer * 5, len = Rr * (1 - layer * .17), w = Rr * .085;
+    const off = rnd() * 6;
+    for (let i = 0; i < n; i++) {
+      x.save(); x.rotate(i / n * 6.283 + off);
+      const g = x.createLinearGradient(0, 0, len, 0);
+      g.addColorStop(0, '#b9c24a'); g.addColorStop(.5, '#e6e070'); g.addColorStop(1, '#f6f0a0');
+      x.globalAlpha = .85; petalPath(x, Rr * .05, len, w); x.fillStyle = g; x.fill();
+      x.globalAlpha = .25; x.strokeStyle = '#a7a63a'; x.lineWidth = 1; x.stroke();
+      x.restore();
+    }
+  }
+  x.globalAlpha = .9; x.fillStyle = '#c3c55a'; x.beginPath(); x.arc(0, 0, Rr * .12, 0, 7); x.fill();
+  return softBlur(c, .7);
+}
+function floret(x, cx, cy, r, col, ctr) {
+  x.save(); x.translate(cx, cy); x.rotate(R(0, 7));
+  const n = rnd() < .5 ? 4 : 5;
+  for (let i = 0; i < n; i++) {
+    x.save(); x.rotate(i / n * 6.283);
+    const g = x.createRadialGradient(0, -r * .55, 0, 0, -r * .55, r * .6);
+    g.addColorStop(0, col[1]); g.addColorStop(1, col[0]);
+    x.fillStyle = g; x.beginPath(); x.ellipse(0, -r * .55, r * .42, r * .55, 0, 0, 7); x.fill();
+    x.globalAlpha *= .4; x.strokeStyle = col[2]; x.lineWidth = 1; x.stroke(); x.globalAlpha /= .4;
+    x.restore();
+  }
+  x.fillStyle = ctr; x.beginPath(); x.arc(0, 0, r * .16, 0, 7); x.fill();
+  x.restore();
+}
+function cluster(Rr, cols, ctr, n = 34) {
+  const S = Math.ceil(Rr * 2.6), c = canvas(S, S), x = c.getContext('2d');
+  x.translate(S / 2, S / 2);
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = R(0, 7), d = Math.sqrt(rnd()) * Rr * .85;
+    pts.push([Math.cos(a) * d, Math.sin(a) * d * .85]);
+  }
+  pts.sort((a, b) => a[1] - b[1]);
+  for (const [px, py] of pts) {
+    x.globalAlpha = .9; floret(x, px, py, Rr * R(.26, .34), pick(cols), ctr);
+  }
+  return softBlur(c, .6);
+}
+function leaf(L) {
+  const c = canvas(Math.ceil(L * .5), Math.ceil(L * 1.1)), x = c.getContext('2d');
+  x.translate(c.width / 2, L * 1.05);
+  const g = x.createLinearGradient(0, 0, 0, -L);
+  g.addColorStop(0, '#87a866'); g.addColorStop(1, '#c2d79a');
+  x.globalAlpha = .85; x.fillStyle = g;
+  x.beginPath(); x.moveTo(0, 0);
+  x.bezierCurveTo(L * .24, -L * .3, L * .2, -L * .75, 0, -L);
+  x.bezierCurveTo(-L * .2, -L * .75, -L * .24, -L * .3, 0, 0); x.fill();
+  x.globalAlpha = .35; x.strokeStyle = '#eaf2d6'; x.lineWidth = 1.5;
+  x.beginPath(); x.moveTo(0, -2); x.lineTo(0, -L * .9); x.stroke();
+  return softBlur(c, .5);
+}
+function butterflySprite(cA, cB) {
+  const c = canvas(120, 110), x = c.getContext('2d');
+  x.translate(60, 55);
+  const wing = (sx) => {
+    x.save(); x.scale(sx, 1);
+    let g = x.createRadialGradient(8, -10, 2, 18, -18, 46);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(.35, cA); g.addColorStop(1, cB);
+    x.fillStyle = g; x.globalAlpha = .9;
+    x.beginPath(); x.moveTo(2, -4); x.bezierCurveTo(10, -46, 52, -48, 46, -18); x.bezierCurveTo(42, -4, 20, 0, 2, -2); x.fill();
+    x.beginPath(); x.moveTo(2, 2); x.bezierCurveTo(30, 4, 40, 30, 22, 36); x.bezierCurveTo(10, 38, 4, 22, 2, 4); x.fill();
+    x.globalAlpha = .3; x.strokeStyle = '#7a8fb0'; x.lineWidth = 1.2; x.stroke();
+    x.restore();
+  };
+  wing(1); wing(-1);
+  x.globalAlpha = 1; x.fillStyle = '#9c8a8f'; x.beginPath(); x.ellipse(0, 0, 2.6, 16, 0, 0, 7); x.fill();
+  x.strokeStyle = '#9c8a8f'; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(0, -14); x.quadraticCurveTo(-4, -24, -9, -27); x.moveTo(0, -14); x.quadraticCurveTo(4, -24, 9, -27); x.stroke();
+  return softBlur(c, .4);
 }
 
-// ---------------------------------------------------------------- palette (from the card)
-const PETALS = [
-  ['#f9c6d3', '#e79ab3'], ['#fcd2b3', '#f2a07e'], ['#fbe6a0', '#e8b84a'], ['#c9e3f3', '#ffffff'],
-  ['#dccdee', '#f7e08a'], ['#f4ecdc', '#e2a93c'], ['#f7a9a0', '#fde3c8'], ['#fbd6e2', '#b98fc0'],
-  ['#ffe0ea', '#9cd08f'], ['#cfe6f5', '#f6d36a'],
+const PINK = [['#d9577c', '#ec8ca7', '#fbd3de'], ['#e06a8b', '#f19fb6', '#fde0e8'], ['#cf5f84', '#ea93ad', '#f9cfdc']];
+const CL_PINK = [['#f08fb0', '#fde1ea', '#d16f92'], ['#f5a6c0', '#fff0f4', '#d97c9c'], ['#ea7fa3', '#fbd0de', '#c9628a']];
+const CL_CREAM = [['#f6e3a8', '#fff9e3', '#d8b25a'], ['#f3d98f', '#fffbe9', '#cfa64a']];
+const SPR = {
+  ger: [0, 1, 2, 0, 1].map(i => gerbera(R(86, 100), PINK[i])),
+  chr: [chrysanthemum(80), chrysanthemum(72)],
+  cl: [cluster(95, CL_PINK, '#c45b80'), cluster(85, CL_PINK, '#c45b80'), cluster(80, CL_PINK, '#c45b80')],
+  cream: [cluster(42, CL_CREAM, '#d49a3a', 9), cluster(36, CL_CREAM, '#d49a3a', 7), cluster(30, CL_CREAM, '#d49a3a', 6)],
+  leaf: [leaf(90), leaf(70), leaf(110)],
+  bf: [butterflySprite('#d9e8f7', '#a9c8ea'), butterflySprite('#fde4ee', '#f2b3c9')],
+};
+
+// ---------------------------------------------------------------- background: pink watercolor paper
+(function paintBg() {
+  const x = document.getElementById('bg').getContext('2d');
+  x.fillStyle = '#fbeff1'; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 70; i++) {
+    const cx = R(-200, W + 200), cy = R(-200, H + 200), r = R(150, 520);
+    const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+    const col = pick(['253,248,247', '247,222,229', '250,232,236', '255,252,250', '244,214,223']);
+    g.addColorStop(0, `rgba(${col},${R(.25, .5)})`); g.addColorStop(1, `rgba(${col},0)`);
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+  }
+  // faint washed-out flowers in the paper
+  x.filter = 'blur(10px)';
+  for (let i = 0; i < 14; i++) {
+    const s = pick([SPR.ger[0], SPR.ger[1], SPR.cl[0], SPR.chr[0]]);
+    x.globalAlpha = R(.06, .12);
+    const k = R(1.1, 2.0);
+    x.drawImage(s, R(-100, W - 100), R(200, H - 100), s.width * k, s.height * k);
+  }
+  x.filter = 'none'; x.globalAlpha = 1;
+  const img = x.getImageData(0, 0, W, H), d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (rnd() - .5) * 7;
+    d[i] += n; d[i + 1] += n; d[i + 2] += n;
+  }
+  x.putImageData(img, 0, 0);
+})();
+
+// ---------------------------------------------------------------- compositions
+// each plant: base point (stem start), head point, sprite, scale, appear time
+function plant(list, o) { list.push(Object.assign({ sway: R(.6, 1.6), ph: R(0, 7), rot: R(-20, 20) }, o)); }
+
+// Scene 1 — bouquet growing out of the bottom-right corner
+const S1 = [], S1T = 1.0;
+(function () {
+  const base = [1120, 1990];
+  const heads = [
+    ['ger', 760, 1300, 1.05], ['ger', 930, 1150, .95], ['ger', 640, 1560, 1.1], ['ger', 980, 1460, 1.0],
+    ['ger', 840, 1720, 1.05], ['chr', 610, 1810, 1.0], ['chr', 1010, 1010, .85], ['chr', 870, 1450, .8],
+    ['cl', 720, 1450, 1.0], ['cl', 1040, 1650, 1.1], ['cl', 900, 1880, 1.05], ['cl', 560, 1690, .9],
+    ['cream', 640, 1180, 1], ['cream', 820, 1020, 1], ['cream', 560, 1400, 1], ['cream', 1000, 900, .9],
+    ['cream', 700, 1060, .8], ['cream', 480, 1560, .9], ['cream', 760, 880, .8], ['cream', 470, 1820, 1],
+    ['ger', 1060, 1260, .9], ['ger', 560, 1950, 1.0], ['cl', 820, 1560, .9], ['cl', 1010, 1880, 1.0],
+    ['cl', 860, 1260, .75], ['chr', 720, 1900, .9], ['cream', 930, 1320, 1], ['cream', 600, 1300, .9],
+  ];
+  for (const [k, hx, hy, s] of heads) {
+    const d = Math.hypot(base[0] - hx, base[1] - hy);
+    plant(S1, { k, sp: pick(SPR[k]), bx: base[0] + R(-80, 20), by: base[1], hx, hy, s: s * (k === 'cream' ? 1.2 : 1),
+      t0: S1T + d / 1100 * 2.0 + R(0, .3), stem: k !== 'cl' });
+  }
+  for (let i = 0; i < 12; i++) {
+    const hx = R(560, 1060), hy = R(1000, 1880);
+    plant(S1, { k: 'leaf', sp: pick(SPR.leaf), bx: hx, by: hy + 40, hx, hy, s: R(.8, 1.2), rot: R(-80, 80),
+      t0: S1T + Math.hypot(1080 - hx, 1920 - hy) / 1100 * 2.0, stem: false, leaf: true });
+  }
+  S1.sort((a, b) => (a.k === 'leaf' ? -1 : 0) - (b.k === 'leaf' ? -1 : 0) || a.hy - b.hy);
+})();
+
+// Scene 2 — a meadow along the bottom
+const S2 = [], S2T = 9.3;
+(function () {
+  const ger = [[200, 1395, 1.0], [880, 1360, 1.0], [430, 1720, 1.05], [760, 1690, .95], [60, 1830, .9], [1000, 1900, .95]];
+  for (const [hx, hy, s] of ger)
+    plant(S2, { k: 'ger', sp: pick(SPR.ger), bx: hx + R(-60, 60), by: 2000, hx, hy, s, t0: S2T + Math.abs(hx - 540) / 540 * .4 + (hy < 1500 ? .4 : 0) + R(0, .25), stem: true });
+  for (const [hx, hy, s] of [[60, 1580, 1.0], [1030, 1600, 1.0], [300, 1950, 1.0], [640, 1960, .9]])
+    plant(S2, { k: 'chr', sp: pick(SPR.chr), bx: hx, by: 2000, hx, hy, s, t0: S2T + .2 + R(0, .4), stem: true });
+  for (const [hx, hy, s] of [[90, 1860, 1.35], [990, 1840, 1.3], [560, 1890, 1.0], [220, 1700, .9], [890, 1950, 1.0], [30, 1680, 1.0], [1060, 1700, 1.0], [700, 1800, .85], [380, 1840, .9]])
+    plant(S2, { k: 'cl', sp: pick(SPR.cl), bx: hx, by: hy + 60, hx, hy, s, t0: S2T + R(0, .5), stem: false });
+  for (let i = 0; i < 12; i++) {
+    const hx = pick([R(20, 340), R(740, 1060), R(300, 780)]), hy = R(1420, 1800);
+    plant(S2, { k: 'cream', sp: pick(SPR.cream), bx: hx + R(-40, 40), by: 2000, hx, hy, s: R(.9, 1.3), t0: S2T + .3 + R(0, .9), stem: true });
+  }
+  for (let i = 0; i < 14; i++) {
+    const hx = R(0, 1080), hy = R(1560, 1940);
+    plant(S2, { k: 'leaf', sp: pick(SPR.leaf), bx: hx, by: hy + 40, hx, hy, s: R(.8, 1.3), rot: R(-70, 70), t0: S2T + R(0, .5), stem: false, leaf: true });
+  }
+  // a pale ghost gerbera behind, like a soft-focus layer
+  plant(S2, { k: 'ghost', sp: SPR.ger[1], bx: 560, by: 2000, hx: 560, hy: 1380, s: 1.3, t0: S2T + .2, stem: true, ghost: true });
+  S2.sort((a, b) => (b.ghost ? 1 : 0) - (a.ghost ? 1 : 0) || (a.leaf ? -1 : 0) - (b.leaf ? -1 : 0) || a.hy - b.hy);
+})();
+
+const cv = document.getElementById('cv'), cx = cv.getContext('2d');
+const MOTTLE = (function () {
+  const c = canvas(W, H), x = c.getContext('2d');
+  for (let i = 0; i < 260; i++) {
+    const px = R(0, W), py = R(0, H), r = R(20, 90);
+    const g = x.createRadialGradient(px, py, 0, px, py, r);
+    const col = rnd() < .5 ? '255,255,255' : '190,80,120';
+    g.addColorStop(0, `rgba(${col},${R(.25, .6)})`); g.addColorStop(1, `rgba(${col},0)`);
+    x.fillStyle = g; x.fillRect(px - r, py - r, 2 * r, 2 * r);
+  }
+  return c;
+})();
+function mottle() {
+  cx.save(); cx.globalCompositeOperation = 'source-atop'; cx.globalAlpha = .16;
+  cx.drawImage(MOTTLE, 0, 0); cx.restore();
+}
+function drawPlants(list, t, alpha, zoom) {
+  cx.save();
+  cx.translate(W / 2, H); cx.scale(zoom, zoom); cx.translate(-W / 2, -H);
+  // stems first
+  for (const p of list) {
+    if (!p.stem) continue;
+    const g = lin(t, p.t0 - .5, p.t0 + .5);
+    if (g <= 0) continue;
+    const sw = Math.sin(t * p.sway + p.ph) * 6;
+    const hx = p.hx + sw, hy = p.hy;
+    const mx = (p.bx + hx) / 2 + (hx - p.bx) * .25 + 40, my = (p.by + hy) / 2;
+    cx.globalAlpha = alpha * (p.ghost ? .25 : .75);
+    cx.strokeStyle = '#a3bd7c'; cx.lineWidth = p.k === 'cream' ? 2.5 : 4.5; cx.lineCap = 'round';
+    cx.beginPath();
+    const N = 24, e = easeOut(g);
+    for (let i = 0; i <= N * e; i++) {
+      const u = i / N, a = 1 - u;
+      const px = a * a * p.bx + 2 * a * u * mx + u * u * hx, py = a * a * p.by + 2 * a * u * my + u * u * hy;
+      i ? cx.lineTo(px, py) : cx.moveTo(px, py);
+    }
+    cx.stroke();
+  }
+  for (const p of list) {
+    const g = lin(t, p.t0, p.t0 + .9);
+    if (g <= 0) continue;
+    const s = backOut(g) * p.s;
+    const sw = Math.sin(t * p.sway + p.ph);
+    cx.save();
+    cx.globalAlpha = alpha * clamp(g * 2) * (p.ghost ? .22 : 1);
+    cx.translate(p.hx + sw * 6, p.hy + Math.sin(t * .8 + p.ph) * 3);
+    cx.rotate((p.rot + sw * 3 + (1 - g) * -40) * Math.PI / 180);
+    cx.scale(s, s);
+    if (p.leaf) cx.drawImage(p.sp, -p.sp.width / 2, -p.sp.height * .95);
+    else cx.drawImage(p.sp, -p.sp.width / 2, -p.sp.height / 2);
+    cx.restore();
+  }
+  cx.restore();
+}
+
+// butterflies
+const BF = [
+  { sp: SPR.bf[0], path: t => [930 + Math.sin(t * .5) * 70, 1000 + Math.cos(t * .7) * 40], s: .9, t0: 2.6, t1: 8.8 },
+  { sp: SPR.bf[1], path: t => [520 + Math.sin(t * .4 + 2) * 60, 1300 + Math.sin(t * .9) * 30], s: .7, t0: 3.6, t1: 8.8 },
+  { sp: SPR.bf[1], path: t => [140 + Math.sin(t * .6) * 30, 1240 + Math.sin(t * .8 + 1) * 30], s: .85, t0: 10.4, t1: 30 },
+  { sp: SPR.bf[0], path: t => [960 + Math.sin(t * .5 + 1) * 30, 1250 + Math.cos(t * .7) * 30], s: .8, t0: 10.9, t1: 30 },
+  { sp: SPR.bf[0], path: t => [600 + Math.sin(t * .35) * 220, 1150 + Math.sin(t * .6) * 70], s: .55, t0: 15.5, t1: 30 },
 ];
-const LEAF = ['#a8cf8e', '#9cc77f', '#b9d9a0', '#8fbf76'];
-const DOTS = ['#f2b7c6', '#bfe0ea', '#f7c9a2', '#d6c6ea', '#d98aa6', '#f6d98c'];
-const RIBBON = ['#e9b3d6', '#c9b6e2', '#f5c3a8', '#f2a9c4'];
-
-// ---------------------------------------------------------------- floral frame
-const flora = document.getElementById('flora');
-const items = [];
-
-function flowerShape(g, size, cols, kind) {
-  const [pc, cc] = cols;
-  const n = kind === 'daisy' ? 9 : 5;
-  if (kind === 'daisy') {
-    for (let i = 0; i < n; i++) {
-      el('ellipse', { cx: 0, cy: -size * .55, rx: size * .2, ry: size * .5, fill: pc,
-        transform: `rotate(${i * 360 / n})` }, g);
-    }
-  } else {
-    for (let i = 0; i < n; i++) {
-      el('circle', { cx: 0, cy: -size * .5, r: size * .44, fill: pc, transform: `rotate(${i * 72})` }, g);
-    }
-    el('circle', { cx: 0, cy: 0, r: size * .5, fill: pc }, g);
-  }
-  el('circle', { cx: 0, cy: 0, r: size * (kind === 'daisy' ? .26 : .22), fill: cc }, g);
-  el('circle', { cx: -size * .06, cy: -size * .07, r: size * .07, fill: '#ffffff', opacity: .5 }, g);
-}
-function leafShape(g, size, col) {
-  el('path', { d: `M0 0 C ${size * .45} ${-size * .25}, ${size * .55} ${-size * .85}, 0 ${-size * 1.15}
-    C ${-size * .55} ${-size * .85}, ${-size * .45} ${-size * .25}, 0 0 Z`, fill: col }, g);
-  el('path', { d: `M0 -${size * .05} L0 ${-size * 1.0}`, stroke: '#ffffff', 'stroke-width': size * .05,
-    opacity: .55, 'stroke-linecap': 'round' }, g);
-}
-function sprigShape(g, size, col) {
-  el('path', { d: `M0 0 Q ${size * .2} ${-size * .8} 0 ${-size * 1.6}`, stroke: '#9cc77f',
-    'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round' }, g);
-  for (let i = 0; i < 3; i++) {
-    const y = -size * (.45 + i * .38), s = i % 2 ? 1 : -1;
-    el('ellipse', { cx: s * size * .2, cy: y, rx: size * .2, ry: size * .09, fill: LEAF[i % 4],
-      transform: `rotate(${s * -30} ${s * size * .2} ${y})` }, g);
-  }
-  const top = el('g', { transform: `translate(0 ${-size * 1.6})` }, g);
-  flowerShape(top, size * .32, col, 'round');
-}
-function ribbonShape(g, size, col) {
-  const p = el('path', { d: `M0 0 C ${size * .4} ${-size * .5}, ${size * .9} ${size * .3}, ${size * 1.2} ${-size * .2}
-    S ${size * 1.6} ${-size * .9}, ${size * 2} ${-size * .4}`, stroke: col, 'stroke-width': size * .09,
-    fill: 'none', 'stroke-linecap': 'round' }, g);
-  return p;
-}
-
-function add(kind, x, y, size, delay) {
-  const outer = el('g', {}, flora);
-  const g = el('g', {}, outer);
-  const it = { kind, x, y, size, delay, outer, g, rot: R(-40, 40), sway: R(2, 6), phase: R(0, 6.28), speed: R(.5, 1) };
-  if (kind === 'flower' || kind === 'daisy') flowerShape(g, size, pick(PETALS), kind === 'daisy' ? 'daisy' : 'round');
-  else if (kind === 'leaf') { leafShape(g, size, pick(LEAF)); it.rot = R(-160, 160); }
-  else if (kind === 'sprig') { sprigShape(g, size, pick(PETALS)); it.rot = R(-25, 25); }
-  else if (kind === 'dot') el('circle', { cx: 0, cy: 0, r: size, fill: pick(DOTS) }, g);
-  else if (kind === 'ribbon') {
-    it.path = ribbonShape(g, size, pick(RIBBON)); it.rot = R(-180, 180);
-    it.len = it.path.getTotalLength(); it.path.setAttribute('stroke-dasharray', it.len);
-  }
-  items.push(it);
-}
-
-// border bands: dense on top & bottom, lighter on the sides (like the card)
-function inFrame(x, y) {
-  return y < 400 || y > 1530 || x < 125 || x > 955;
-}
-function scatter(n, kinds, sizeR, region) {
-  let tries = 0, made = 0;
-  while (made < n && tries < 5000) {
-    tries++;
-    const x = R(-30, 1110), y = R(-30, 1950);
-    if (!inFrame(x, y) || !region(x, y)) continue;
-    const size = R(sizeR[0], sizeR[1]);
-    if (kinds[0] !== 'dot' && items.some(o => (o.kind === 'flower' || o.kind === 'daisy') &&
-        Math.hypot(o.x - x, o.y - y) < (o.size + size) * 1.05)) continue;
-    // reveal from the corners inward
-    const d = Math.min(Math.hypot(x, y), Math.hypot(1080 - x, y), Math.hypot(x, 1920 - y), Math.hypot(1080 - x, 1920 - y));
-    add(pick(kinds), x, y, size, .1 + d / 900 * 1.6 + R(0, .35));
-    made++;
-  }
-}
-const any = () => true;
-scatter(14, ['leaf'], [46, 70], any);
-scatter(6, ['sprig'], [60, 85], (x, y) => y < 380 || y > 1560);
-scatter(4, ['ribbon'], [55, 80], any);
-scatter(32, ['flower', 'flower', 'daisy'], [34, 62], any);
-scatter(8, ['flower', 'daisy'], [30, 48], (x, y) => y > 400 && y < 1530);
-scatter(12, ['flower', 'daisy'], [22, 32], any);
-scatter(30, ['dot'], [7, 13], any);
-
-function renderFlora(t, fade) {
-  for (const it of items) {
-    const p = lin(t, it.delay, it.delay + .9);
-    const s = p <= 0 ? 0 : backOut(p);
-    const sway = Math.sin(t * it.speed + it.phase) * it.sway;
-    const bob = Math.sin(t * it.speed * .8 + it.phase) * 4;
-    it.outer.setAttribute('transform', `translate(${it.x} ${it.y + bob}) rotate(${it.rot + sway + (1 - p) * -60}) scale(${s})`);
-    it.outer.setAttribute('opacity', (p > 0 ? 1 : 0) * fade);
-    if (it.path) it.path.setAttribute('stroke-dashoffset', it.len * (1 - easeOut(lin(t, it.delay, it.delay + 1.6))));
+function drawButterflies(t) {
+  for (const b of BF) {
+    const a = lin(t, b.t0, b.t0 + .8) * (1 - lin(t, b.t1 - .6, b.t1));
+    if (a <= 0) continue;
+    const [x, y] = b.path(t), [x2] = b.path(t + .05);
+    const flap = .35 + .65 * Math.abs(Math.cos(t * 9 + b.t0));
+    cx.save(); cx.globalAlpha = a; cx.translate(x, y);
+    cx.rotate((x2 - x) * .01 + Math.sin(t * 2 + b.t0) * .12);
+    cx.scale(b.s * flap, b.s);
+    cx.drawImage(b.sp, -60, -55);
+    cx.restore();
   }
 }
 
-// ---------------------------------------------------------------- text lines
+// ---------------------------------------------------------------- texts
 const texts = document.getElementById('texts');
 const LINES = [];
-function line(txt, cls, y, tin, tout, opt = {}) {
+function line(txt, cls, y, tin, tout, kind = 'wipe', dur = 1.4) {
   const d = document.createElement('div');
-  d.className = 'line ' + cls; d.textContent = txt; d.style.top = y + 'px';
+  d.className = 'line ' + cls + (kind === 'wipe' ? ' wipe' : '');
+  d.textContent = txt; d.style.top = y + 'px';
   texts.appendChild(d);
-  LINES.push({ d, tin, tout, dur: opt.dur || 1.1, kind: opt.kind || 'rise' });
-  return d;
+  LINES.push({ d, tin, tout, kind, dur, txt });
 }
-function divider(y, tin, tout) {
-  const s = el('svg', { class: 'divider', viewBox: '0 0 400 40' });
-  s.style.top = y + 'px';
-  el('path', { d: 'M20 20 H160', stroke: '#e6b9c7', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, s);
-  el('path', { d: 'M240 20 H380', stroke: '#e6b9c7', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, s);
-  const f = el('g', { transform: 'translate(200 20)' }, s);
-  flowerShape(f, 13, ['#f6c3d2', '#f2d27a'], 'round');
-  texts.appendChild(s);
-  LINES.push({ d: s, tin, tout, dur: 1.0, kind: 'grow' });
-}
-
-// Scene A — حمد
-line('الحمد لله', 'title', 700, 0.9, 6.0, { dur: 1.3 });
-line('على تمام النعمة', 'body', 860, 1.7, 6.0);
-line('واكتمال المِنّة', 'body', 970, 2.4, 6.0);
-divider(1110, 3.1, 6.0);
-
-// Scene B — عبد الله
-line('بعد أن أُضيئت دنيانا فرحًا بـ', 'body', 740, 6.9, 12.2);
-line('عبد الله', 'boy', 860, 8.1, 12.2, { kind: 'pop', dur: 1.4 });
-divider(1170, 9.0, 12.2);
-
-// Scene C — أميرة جديدة
-line('أكرمنا الله', 'title', 640, 12.9, 18.8, { dur: 1.2 });
-line('بأميرةٍ جديدة', 'body', 800, 13.7, 18.8);
-line('زاد بقدومها قلوبنا حبًّا', 'body', 930, 14.9, 18.8);
-line('وحياتنا جمالًا', 'body', 1060, 16.0, 18.8);
-divider(1200, 16.8, 18.8);
-
-// Scene E — دعاء (name has moved up)
-line('اللهم أنبتها نباتًا حسنًا', 'dua', 900, 26.6, 35.6);
-line('واجعلها من أجمل أقدارك', 'dua', 995, 27.7, 35.6);
-line('وأنِر دربها', 'dua', 1090, 28.8, 35.6);
-line('واملأ عمرها عافيةً وسعادة', 'dua', 1185, 29.9, 35.6);
-line('واجعلها من عبادك الصالحين', 'dua', 1280, 31.0, 35.6);
-divider(1390, 32.1, 35.6);
+// Scene 1
+line('الحمد لله على تمام النعمة', 'ruqaa', 390, .4, 8.9, 'wipe', 1.7);
+line('واكتمال المِنّة', 'ruqaa', 495, 1.3, 8.9, 'wipe', 1.3);
+line('بعد أن أُضيئت دنيانا فرحًا بـ', 'sub', 640, 2.6, 8.9, 'rise', 1.1);
+line('عبد الله', 'boy', 690, 3.5, 8.9, 'wipe', 1.5);
+// Scene 2
+line('أكرمنا الله بأميرةٍ جديدة', 'body', 270, 10.0, 99, 'rise', 1.1);
+line('زاد بقدومها قلوبنا حبًّا، وحياتنا جمالًا', 'body', 350, 10.8, 99, 'rise', 1.1);
+line('Welcome our little Princess', 'en', 800, 15.0, 99, 'type', 1.6);
+line('اللهم أنبتها نباتًا حسنًا', 'dua', 930, 16.9, 99, 'rise', 1.1);
+line('واجعلها من أجمل أقدارك', 'dua', 1000, 17.6, 99, 'rise', 1.1);
+line('وأنِر دربها، واملأ عمرها عافيةً وسعادة', 'dua', 1070, 18.3, 99, 'rise', 1.1);
+line('واجعلها من عبادك الصالحين', 'dua', 1140, 19.0, 99, 'rise', 1.1);
 
 function renderLines(t) {
   for (const L of LINES) {
-    const pin = easeOut(lin(t, L.tin, L.tin + L.dur));
-    const pout = easeInOut(lin(t, L.tout - .7, L.tout));
-    const o = pin * (1 - pout);
-    L.d.style.opacity = o;
-    L.d.style.display = o <= 0.001 ? 'none' : '';
-    if (L.kind === 'pop') {
-      const s = lin(t, L.tin, L.tin + L.dur) <= 0 ? .6 : .6 + .4 * backOut(lin(t, L.tin, L.tin + L.dur));
-      L.d.style.transform = `scale(${s * (1 - .05 * pout)})`;
-      L.d.style.filter = `blur(${(1 - pin) * 10}px)`;
-    } else if (L.kind === 'grow') {
-      L.d.style.transform = `scaleX(${.2 + .8 * pin})`;
+    const p = lin(t, L.tin, L.tin + L.dur), out = easeInOut(lin(t, L.tout - .8, L.tout));
+    const vis = p > 0 && out < 1;
+    L.d.style.display = vis ? '' : 'none';
+    if (!vis) continue;
+    L.d.style.opacity = 1 - out;
+    if (L.kind === 'wipe') {
+      const e = easeInOut(p) * 120;
+      L.d.style.setProperty('--a', (e - 20) + '%'); L.d.style.setProperty('--b', e + '%');
+      L.d.style.transform = `translateY(${-out * 20}px)`;
+    } else if (L.kind === 'type') {
+      const n = Math.round(p * L.txt.length);
+      L.d.textContent = L.txt.slice(0, n);
+      L.d.style.opacity = (1 - out) * clamp(p * 4);
     } else {
-      L.d.style.transform = `translateY(${(1 - pin) * 34 - pout * 20}px)`;
-      L.d.style.filter = `blur(${(1 - pin) * 8 + pout * 6}px)`;
+      const e = easeOut(p);
+      L.d.style.opacity = e * (1 - out);
+      L.d.style.transform = `translateY(${(1 - e) * 26}px)`;
+      L.d.style.filter = `blur(${(1 - e) * 6}px)`;
     }
   }
 }
 
-// ---------------------------------------------------------------- name رفيف
-const nameEl = document.getElementById('name');
-const glowEl = document.getElementById('nameGlow');
+// ---------------------------------------------------------------- name
+const NIN = 12.6;
+const nameReveal = document.getElementById('nameReveal');
+const nameEl = document.getElementById('name'), glowEl = document.getElementById('nameGlow');
 const nameWrap = document.getElementById('nameWrap');
-const N_IN = 19.4, N_UP = 25.0;
 function renderName(t) {
-  const fadeIn = lin(t, N_IN - .2, N_IN + .3);
-  // calligraphy is written right-to-left: wipe from the right edge
-  const w = easeInOut(lin(t, N_IN, N_IN + 2.6));
-  const clip = `inset(-20px -20px -20px ${100 - w * 100}%)`;
-  nameEl.style.clipPath = clip;
-  glowEl.style.clipPath = clip;
-  nameWrap.style.opacity = fadeIn;
-  nameWrap.style.display = fadeIn <= 0 ? 'none' : '';
-  // shimmer
-  nameEl.style.backgroundPosition = `${100 - ((t - N_IN) * 22) % 300}% 0`;
-  glowEl.style.opacity = .35 + .25 * Math.sin(t * 2.2) * lin(t, N_IN + 2.4, N_IN + 3.4) + .3 * (1 - lin(t, N_IN + 2.2, N_IN + 3.6)) * w;
-  // breathe, then move up & shrink for the dua
-  const up = easeInOut(lin(t, N_UP, N_UP + 1.4));
-  const breathe = 1 + .02 * Math.sin((t - N_IN) * 1.6) * (1 - up);
-  const back = easeInOut(lin(t, 35.6, 36.9));
-  const pos = up * (1 - back);
-  const s = (1 - .38 * pos) * breathe * (1 + .04 * back);
-  nameWrap.style.transform = `translateY(${-340 * pos}px) scale(${s})`;
+  const p = lin(t, NIN, NIN + 2.4);
+  nameWrap.style.display = p > 0 ? '' : 'none';
+  if (p <= 0) return;
+  // written from the right, with a feathered pen edge
+  const e = easeInOut(p) * 125;
+  nameReveal.style.webkitMaskImage = `linear-gradient(to left, #000 ${e - 25}%, transparent ${e}%)`;
+  nameEl.style.backgroundPosition = `${100 - ((t - NIN) * 26) % 320}% 0`;
+  glowEl.style.opacity = .25 + .2 * Math.sin(t * 2) + .35 * (1 - lin(t, NIN + 2, NIN + 3.5));
+  const s = 1 + .015 * Math.sin((t - NIN) * 1.5);
+  nameWrap.style.transform = `scale(${s})`;
 }
 
-// ---------------------------------------------------------------- particles: sparkles + falling petals
-const fx = document.getElementById('fx');
-const sparks = [], petals = [];
-for (let i = 0; i < 46; i++) {
-  const g = el('g', {}, fx);
-  const c = pick(['#f5c26b', '#f3a7c0', '#ffffff', '#f9d98c', '#c9b6e2']);
-  el('path', { d: 'M0 -12 Q2 -2 12 0 Q2 2 0 12 Q-2 2 -12 0 Q-2 -2 0 -12Z', fill: c }, g);
-  sparks.push({ g, x: R(120, 960), y: R(560, 1350), t0: R(0, 1), sc: R(.6, 1.4), sp: R(.8, 1.6), wave: R(0, 6.28) });
+// ---------------------------------------------------------------- particles (sparkles + drifting petals)
+const fx = document.getElementById('fx'), fxx = fx.getContext('2d');
+const SP = [], PET = [];
+for (let i = 0; i < 40; i++) SP.push({ x: R(150, 930), y: R(440, 900), sp: R(.7, 1.5), o: R(0, 1), s: R(.5, 1.2) });
+for (let i = 0; i < 26; i++) PET.push({ x: R(-40, 1120), t0: R(-2, 26), v: R(70, 130), amp: R(30, 80), f: R(.5, 1.1), r: R(0, 6), rs: R(-2, 2), s: R(.6, 1.3), c: pick(['#f6b8cb', '#f9cad8', '#fde3eb', '#f3a5bd']) });
+function star(x, s) {
+  x.beginPath(); x.moveTo(0, -s);
+  x.quadraticCurveTo(s * .15, -s * .15, s, 0); x.quadraticCurveTo(s * .15, s * .15, 0, s);
+  x.quadraticCurveTo(-s * .15, s * .15, -s, 0); x.quadraticCurveTo(-s * .15, -s * .15, 0, -s); x.fill();
 }
-for (let i = 0; i < 34; i++) {
-  const g = el('g', {}, fx);
-  const c = pick(PETALS)[0];
-  el('ellipse', { cx: 0, cy: 0, rx: 15, ry: 9, fill: c }, g);
-  el('ellipse', { cx: -4, cy: -2, rx: 6, ry: 3, fill: '#ffffff', opacity: .45 }, g);
-  petals.push({ g, x: R(-40, 1120), t0: R(N_IN - 1, N_IN + 16), v: R(150, 260), amp: R(30, 90), f: R(.6, 1.3), r: R(0, 360), rs: R(-120, 120), sc: R(.7, 1.5) });
-}
-function sparkleWindow(t, a, b) { return lin(t, a, a + .5) * (1 - lin(t, b - .6, b)); }
 function renderFx(t) {
-  // sparkles twinkle around عبد الله and رفيف, and softly at the very end
-  const k = Math.max(sparkleWindow(t, 8.2, 12.2) * .6, sparkleWindow(t, N_IN + .4, 26.0), sparkleWindow(t, 35.8, 39) * .8);
-  for (const s of sparks) {
-    const ph = ((t * s.sp + s.t0) % 1);
-    const tw = Math.sin(ph * Math.PI);
-    const yy = s.y + Math.sin(t * .7 + s.wave) * 10;
-    s.g.setAttribute('transform', `translate(${s.x} ${yy}) rotate(${t * 40 * s.sp}) scale(${s.sc * tw})`);
-    s.g.setAttribute('opacity', k * tw);
+  fxx.clearRect(0, 0, W, H);
+  // sparkles around عبد الله, then around رفيف
+  const k1 = lin(t, 4.0, 4.6) * (1 - lin(t, 8.2, 8.9));
+  const k2 = lin(t, NIN + .6, NIN + 1.4) * (1 - lin(t, 23.6, 24.3));
+  for (const s of SP) {
+    const ph = (t * s.sp + s.o) % 1, tw = Math.sin(ph * Math.PI);
+    for (const [k, dy, col] of [[k1 * .8, 120, '#f6cf7a'], [k2, 0, '#f4b0c5']]) {
+      if (k <= 0) continue;
+      fxx.save(); fxx.globalAlpha = k * tw; fxx.fillStyle = s.o > .5 ? '#ffffff' : col;
+      fxx.translate(s.x, s.y + dy); fxx.rotate(t * s.sp);
+      star(fxx, 11 * s.s * tw); fxx.restore();
+    }
   }
-  // falling petals during and after the name reveal
-  const pk = 1 - lin(t, 37.5, 39);
-  for (const p of petals) {
-    const dt = t - p.t0;
-    if (dt < 0) { p.g.setAttribute('opacity', 0); continue; }
-    const y = -40 + dt * p.v;
+  // drifting petals (soft, sparse)
+  for (const p of PET) {
+    const dt = t - p.t0; if (dt < 0) continue;
+    const y = -40 + dt * p.v; if (y > H + 40) continue;
     const x = p.x + Math.sin(dt * p.f) * p.amp;
-    p.g.setAttribute('transform', `translate(${x} ${y}) rotate(${p.r + dt * p.rs}) scale(${p.sc} ${p.sc * (.6 + .4 * Math.abs(Math.sin(dt * 2 * p.f)))})`);
-    p.g.setAttribute('opacity', (y > 1960 ? 0 : .9) * pk);
+    fxx.save(); fxx.globalAlpha = .75; fxx.fillStyle = p.c;
+    fxx.translate(x, y); fxx.rotate(p.r + dt * p.rs);
+    fxx.scale(p.s, p.s * (.5 + .5 * Math.abs(Math.sin(dt * 2 * p.f))));
+    fxx.beginPath(); fxx.ellipse(0, 0, 14, 8, 0, 0, 7); fxx.fill();
+    fxx.restore();
   }
 }
 
 // ---------------------------------------------------------------- frame
 const stage = document.getElementById('stage');
 window.render = function (t) {
-  renderFlora(t, 1);
+  cx.clearRect(0, 0, W, H);
+  const out1 = easeInOut(lin(t, 8.2, 9.4));
+  if (out1 < 1) drawPlants(S1, t, 1 - out1, 1 + .03 * lin(t, 0, 9) + out1 * .05);
+  drawButterflies(t);
+  if (t > S2T - .6) drawPlants(S2, t, lin(t, S2T - .6, S2T), 1 + .025 * lin(t, S2T, TOTAL));
+  mottle();
   renderLines(t);
   renderName(t);
   renderFx(t);
-  // gentle fade in from white / fade out to white
-  const fi = lin(t, 0, .6), fo = lin(t, TOTAL - 1.0, TOTAL);
-  stage.style.filter = `brightness(${1 + (1 - fi) * .25 + fo * .25})`;
+  const fi = lin(t, 0, .7), fo = lin(t, TOTAL - .5, TOTAL);
+  stage.style.filter = `brightness(${1 + (1 - fi) * .12 + fo * .12})`;
 };
 window.TOTAL = TOTAL;
 window.render(0);

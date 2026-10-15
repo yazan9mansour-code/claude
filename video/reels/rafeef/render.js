@@ -31,7 +31,8 @@ const args = process.argv.slice(2);
   const total = await page.evaluate(() => window.TOTAL);
   const n = Math.round(total * FPS);
   const ff = ['-y', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-'];
-  if (audio) ff.push('-i', audio, '-map', '0:v', '-map', '1:a', '-c:a', 'aac', '-b:a', '192k', '-shortest');
+  if (audio) ff.push('-i', audio, '-map', '0:v', '-map', '1:a', '-af', `afade=t=out:st=${(total - .8).toFixed(2)}:d=0.8`,
+    '-c:a', 'aac', '-b:a', '192k', '-shortest');
   ff.push('-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-movflags', '+faststart', out);
   const enc = spawn('ffmpeg', ff, { stdio: ['pipe', 'ignore', 'inherit'] });
