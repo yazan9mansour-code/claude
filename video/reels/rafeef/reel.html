@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: Ruqaa; src: url(../../assets/fonts/aref-ruqaa-arabic-700-normal.ttf); }
+@font-face { font-family: Amiri; font-weight: 400; src: url(../../assets/fonts/amiri-arabic-400-normal.ttf); }
+@font-face { font-family: Amiri; font-weight: 700; src: url(../../assets/fonts/amiri-arabic-700-normal.ttf); }
+html, body { margin: 0; padding: 0; }
+#stage {
+  position: relative; width: 1080px; height: 1920px; overflow: hidden;
+  background: radial-gradient(ellipse 70% 45% at 50% 48%, #fff8fa 0%, #fffdfb 55%, #fdf8f3 100%);
+}
+#flora, #fx { position: absolute; inset: 0; }
+.line {
+  position: absolute; left: 0; right: 0; text-align: center;
+  font-family: Amiri; color: #8a6b74; white-space: nowrap; will-change: transform, opacity;
+}
+.body { font-size: 68px; font-weight: 700; color: #7c5a64; }
+.small { font-size: 50px; font-weight: 400; color: #9a7d85; }
+.title { font-family: Ruqaa; font-size: 92px; color: #c27f99; }
+.boy { font-family: Ruqaa; font-size: 200px; color: #7fa7c6; text-shadow: 0 6px 26px rgba(127,167,198,.28); }
+.dua { font-size: 62px; font-weight: 700; color: #7c5a64; }
+#name {
+  position: absolute; width: 860px; height: 354px; left: 110px; top: 780px;
+  -webkit-mask: url(name_mask.png) center / contain no-repeat;
+  mask: url(name_mask.png) center / contain no-repeat;
+  background: linear-gradient(100deg, #e7a6bd 0%, #d97f9f 30%, #f6c9d8 45%, #d97f9f 60%, #e7a6bd 100%);
+  background-size: 300% 100%;
+}
+#nameGlow {
+  position: absolute; width: 860px; height: 354px; left: 110px; top: 780px;
+  -webkit-mask: url(name_mask.png) center / contain no-repeat;
+  mask: url(name_mask.png) center / contain no-repeat;
+  background: #f4b3c8; filter: blur(22px);
+}
+.divider { position: absolute; left: 340px; width: 400px; height: 40px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="flora" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+  <div id="texts"></div>
+  <div id="nameWrap" style="position:absolute;inset:0;transform-origin:540px 957px">
+    <div id="nameGlow"></div>
+    <div id="name"></div>
+  </div>
+  <svg id="fx" width="1080" height="1920" viewBox="0 0 1080 1920"></svg>
+</div>
+<script>
+'use strict';
+const NS = 'http://www.w3.org/2000/svg';
+const TOTAL = 39.0;
+
+// ---------------------------------------------------------------- helpers
+let seed = 20261015;
+const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+const R = (a, b) => a + (b - a) * rnd();
+const pick = arr => arr[Math.floor(rnd() * arr.length)];
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const backOut = x => { const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+// ---------------------------------------------------------------- palette (from the card)
+const PETALS = [
+  ['#f9c6d3', '#e79ab3'], ['#fcd2b3', '#f2a07e'], ['#fbe6a0', '#e8b84a'], ['#c9e3f3', '#ffffff'],
+  ['#dccdee', '#f7e08a'], ['#f4ecdc', '#e2a93c'], ['#f7a9a0', '#fde3c8'], ['#fbd6e2', '#b98fc0'],
+  ['#ffe0ea', '#9cd08f'], ['#cfe6f5', '#f6d36a'],
+];
+const LEAF = ['#a8cf8e', '#9cc77f', '#b9d9a0', '#8fbf76'];
+const DOTS = ['#f2b7c6', '#bfe0ea', '#f7c9a2', '#d6c6ea', '#d98aa6', '#f6d98c'];
+const RIBBON = ['#e9b3d6', '#c9b6e2', '#f5c3a8', '#f2a9c4'];
+
+// ---------------------------------------------------------------- floral frame
+const flora = document.getElementById('flora');
+const items = [];
+
+function flowerShape(g, size, cols, kind) {
+  const [pc, cc] = cols;
+  const n = kind === 'daisy' ? 9 : 5;
+  if (kind === 'daisy') {
+    for (let i = 0; i < n; i++) {
+      el('ellipse', { cx: 0, cy: -size * .55, rx: size * .2, ry: size * .5, fill: pc,
+        transform: `rotate(${i * 360 / n})` }, g);
+    }
+  } else {
+    for (let i = 0; i < n; i++) {
+      el('circle', { cx: 0, cy: -size * .5, r: size * .44, fill: pc, transform: `rotate(${i * 72})` }, g);
+    }
+    el('circle', { cx: 0, cy: 0, r: size * .5, fill: pc }, g);
+  }
+  el('circle', { cx: 0, cy: 0, r: size * (kind === 'daisy' ? .26 : .22), fill: cc }, g);
+  el('circle', { cx: -size * .06, cy: -size * .07, r: size * .07, fill: '#ffffff', opacity: .5 }, g);
+}
+function leafShape(g, size, col) {
+  el('path', { d: `M0 0 C ${size * .45} ${-size * .25}, ${size * .55} ${-size * .85}, 0 ${-size * 1.15}
+    C ${-size * .55} ${-size * .85}, ${-size * .45} ${-size * .25}, 0 0 Z`, fill: col }, g);
+  el('path', { d: `M0 -${size * .05} L0 ${-size * 1.0}`, stroke: '#ffffff', 'stroke-width': size * .05,
+    opacity: .55, 'stroke-linecap': 'round' }, g);
+}
+function sprigShape(g, size, col) {
+  el('path', { d: `M0 0 Q ${size * .2} ${-size * .8} 0 ${-size * 1.6}`, stroke: '#9cc77f',
+    'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round' }, g);
+  for (let i = 0; i < 3; i++) {
+    const y = -size * (.45 + i * .38), s = i % 2 ? 1 : -1;
+    el('ellipse', { cx: s * size * .2, cy: y, rx: size * .2, ry: size * .09, fill: LEAF[i % 4],
+      transform: `rotate(${s * -30} ${s * size * .2} ${y})` }, g);
+  }
+  const top = el('g', { transform: `translate(0 ${-size * 1.6})` }, g);
+  flowerShape(top, size * .32, col, 'round');
+}
+function ribbonShape(g, size, col) {
+  const p = el('path', { d: `M0 0 C ${size * .4} ${-size * .5}, ${size * .9} ${size * .3}, ${size * 1.2} ${-size * .2}
+    S ${size * 1.6} ${-size * .9}, ${size * 2} ${-size * .4}`, stroke: col, 'stroke-width': size * .09,
+    fill: 'none', 'stroke-linecap': 'round' }, g);
+  return p;
+}
+
+function add(kind, x, y, size, delay) {
+  const outer = el('g', {}, flora);
+  const g = el('g', {}, outer);
+  const it = { kind, x, y, size, delay, outer, g, rot: R(-40, 40), sway: R(2, 6), phase: R(0, 6.28), speed: R(.5, 1) };
+  if (kind === 'flower' || kind === 'daisy') flowerShape(g, size, pick(PETALS), kind === 'daisy' ? 'daisy' : 'round');
+  else if (kind === 'leaf') { leafShape(g, size, pick(LEAF)); it.rot = R(-160, 160); }
+  else if (kind === 'sprig') { sprigShape(g, size, pick(PETALS)); it.rot = R(-25, 25); }
+  else if (kind === 'dot') el('circle', { cx: 0, cy: 0, r: size, fill: pick(DOTS) }, g);
+  else if (kind === 'ribbon') {
+    it.path = ribbonShape(g, size, pick(RIBBON)); it.rot = R(-180, 180);
+    it.len = it.path.getTotalLength(); it.path.setAttribute('stroke-dasharray', it.len);
+  }
+  items.push(it);
+}
+
+// border bands: dense on top & bottom, lighter on the sides (like the card)
+function inFrame(x, y) {
+  return y < 400 || y > 1530 || x < 125 || x > 955;
+}
+function scatter(n, kinds, sizeR, region) {
+  let tries = 0, made = 0;
+  while (made < n && tries < 5000) {
+    tries++;
+    const x = R(-30, 1110), y = R(-30, 1950);
+    if (!inFrame(x, y) || !region(x, y)) continue;
+    const size = R(sizeR[0], sizeR[1]);
+    if (kinds[0] !== 'dot' && items.some(o => (o.kind === 'flower' || o.kind === 'daisy') &&
+        Math.hypot(o.x - x, o.y - y) < (o.size + size) * 1.05)) continue;
+    // reveal from the corners inward
+    const d = Math.min(Math.hypot(x, y), Math.hypot(1080 - x, y), Math.hypot(x, 1920 - y), Math.hypot(1080 - x, 1920 - y));
+    add(pick(kinds), x, y, size, .1 + d / 900 * 1.6 + R(0, .35));
+    made++;
+  }
+}
+const any = () => true;
+scatter(14, ['leaf'], [46, 70], any);
+scatter(6, ['sprig'], [60, 85], (x, y) => y < 380 || y > 1560);
+scatter(4, ['ribbon'], [55, 80], any);
+scatter(32, ['flower', 'flower', 'daisy'], [34, 62], any);
+scatter(8, ['flower', 'daisy'], [30, 48], (x, y) => y > 400 && y < 1530);
+scatter(12, ['flower', 'daisy'], [22, 32], any);
+scatter(30, ['dot'], [7, 13], any);
+
+function renderFlora(t, fade) {
+  for (const it of items) {
+    const p = lin(t, it.delay, it.delay + .9);
+    const s = p <= 0 ? 0 : backOut(p);
+    const sway = Math.sin(t * it.speed + it.phase) * it.sway;
+    const bob = Math.sin(t * it.speed * .8 + it.phase) * 4;
+    it.outer.setAttribute('transform', `translate(${it.x} ${it.y + bob}) rotate(${it.rot + sway + (1 - p) * -60}) scale(${s})`);
+    it.outer.setAttribute('opacity', (p > 0 ? 1 : 0) * fade);
+    if (it.path) it.path.setAttribute('stroke-dashoffset', it.len * (1 - easeOut(lin(t, it.delay, it.delay + 1.6))));
+  }
+}
+
+// ---------------------------------------------------------------- text lines
+const texts = document.getElementById('texts');
+const LINES = [];
+function line(txt, cls, y, tin, tout, opt = {}) {
+  const d = document.createElement('div');
+  d.className = 'line ' + cls; d.textContent = txt; d.style.top = y + 'px';
+  texts.appendChild(d);
+  LINES.push({ d, tin, tout, dur: opt.dur || 1.1, kind: opt.kind || 'rise' });
+  return d;
+}
+function divider(y, tin, tout) {
+  const s = el('svg', { class: 'divider', viewBox: '0 0 400 40' });
+  s.style.top = y + 'px';
+  el('path', { d: 'M20 20 H160', stroke: '#e6b9c7', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, s);
+  el('path', { d: 'M240 20 H380', stroke: '#e6b9c7', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, s);
+  const f = el('g', { transform: 'translate(200 20)' }, s);
+  flowerShape(f, 13, ['#f6c3d2', '#f2d27a'], 'round');
+  texts.appendChild(s);
+  LINES.push({ d: s, tin, tout, dur: 1.0, kind: 'grow' });
+}
+
+// Scene A — حمد
+line('الحمد لله', 'title', 700, 0.9, 6.0, { dur: 1.3 });
+line('على تمام النعمة', 'body', 860, 1.7, 6.0);
+line('واكتمال المِنّة', 'body', 970, 2.4, 6.0);
+divider(1110, 3.1, 6.0);
+
+// Scene B — عبد الله
+line('بعد أن أُضيئت دنيانا فرحًا بـ', 'body', 740, 6.9, 12.2);
+line('عبد الله', 'boy', 860, 8.1, 12.2, { kind: 'pop', dur: 1.4 });
+divider(1170, 9.0, 12.2);
+
+// Scene C — أميرة جديدة
+line('أكرمنا الله', 'title', 640, 12.9, 18.8, { dur: 1.2 });
+line('بأميرةٍ جديدة', 'body', 800, 13.7, 18.8);
+line('زاد بقدومها قلوبنا حبًّا', 'body', 930, 14.9, 18.8);
+line('وحياتنا جمالًا', 'body', 1060, 16.0, 18.8);
+divider(1200, 16.8, 18.8);
+
+// Scene E — دعاء (name has moved up)
+line('اللهم أنبتها نباتًا حسنًا', 'dua', 900, 26.6, 35.6);
+line('واجعلها من أجمل أقدارك', 'dua', 995, 27.7, 35.6);
+line('وأنِر دربها', 'dua', 1090, 28.8, 35.6);
+line('واملأ عمرها عافيةً وسعادة', 'dua', 1185, 29.9, 35.6);
+line('واجعلها من عبادك الصالحين', 'dua', 1280, 31.0, 35.6);
+divider(1390, 32.1, 35.6);
+
+function renderLines(t) {
+  for (const L of LINES) {
+    const pin = easeOut(lin(t, L.tin, L.tin + L.dur));
+    const pout = easeInOut(lin(t, L.tout - .7, L.tout));
+    const o = pin * (1 - pout);
+    L.d.style.opacity = o;
+    L.d.style.display = o <= 0.001 ? 'none' : '';
+    if (L.kind === 'pop') {
+      const s = lin(t, L.tin, L.tin + L.dur) <= 0 ? .6 : .6 + .4 * backOut(lin(t, L.tin, L.tin + L.dur));
+      L.d.style.transform = `scale(${s * (1 - .05 * pout)})`;
+      L.d.style.filter = `blur(${(1 - pin) * 10}px)`;
+    } else if (L.kind === 'grow') {
+      L.d.style.transform = `scaleX(${.2 + .8 * pin})`;
+    } else {
+      L.d.style.transform = `translateY(${(1 - pin) * 34 - pout * 20}px)`;
+      L.d.style.filter = `blur(${(1 - pin) * 8 + pout * 6}px)`;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- name رفيف
+const nameEl = document.getElementById('name');
+const glowEl = document.getElementById('nameGlow');
+const nameWrap = document.getElementById('nameWrap');
+const N_IN = 19.4, N_UP = 25.0;
+function renderName(t) {
+  const fadeIn = lin(t, N_IN - .2, N_IN + .3);
+  // calligraphy is written right-to-left: wipe from the right edge
+  const w = easeInOut(lin(t, N_IN, N_IN + 2.6));
+  const clip = `inset(-20px -20px -20px ${100 - w * 100}%)`;
+  nameEl.style.clipPath = clip;
+  glowEl.style.clipPath = clip;
+  nameWrap.style.opacity = fadeIn;
+  nameWrap.style.display = fadeIn <= 0 ? 'none' : '';
+  // shimmer
+  nameEl.style.backgroundPosition = `${100 - ((t - N_IN) * 22) % 300}% 0`;
+  glowEl.style.opacity = .35 + .25 * Math.sin(t * 2.2) * lin(t, N_IN + 2.4, N_IN + 3.4) + .3 * (1 - lin(t, N_IN + 2.2, N_IN + 3.6)) * w;
+  // breathe, then move up & shrink for the dua
+  const up = easeInOut(lin(t, N_UP, N_UP + 1.4));
+  const breathe = 1 + .02 * Math.sin((t - N_IN) * 1.6) * (1 - up);
+  const back = easeInOut(lin(t, 35.6, 36.9));
+  const pos = up * (1 - back);
+  const s = (1 - .38 * pos) * breathe * (1 + .04 * back);
+  nameWrap.style.transform = `translateY(${-340 * pos}px) scale(${s})`;
+}
+
+// ---------------------------------------------------------------- particles: sparkles + falling petals
+const fx = document.getElementById('fx');
+const sparks = [], petals = [];
+for (let i = 0; i < 46; i++) {
+  const g = el('g', {}, fx);
+  const c = pick(['#f5c26b', '#f3a7c0', '#ffffff', '#f9d98c', '#c9b6e2']);
+  el('path', { d: 'M0 -12 Q2 -2 12 0 Q2 2 0 12 Q-2 2 -12 0 Q-2 -2 0 -12Z', fill: c }, g);
+  sparks.push({ g, x: R(120, 960), y: R(560, 1350), t0: R(0, 1), sc: R(.6, 1.4), sp: R(.8, 1.6), wave: R(0, 6.28) });
+}
+for (let i = 0; i < 34; i++) {
+  const g = el('g', {}, fx);
+  const c = pick(PETALS)[0];
+  el('ellipse', { cx: 0, cy: 0, rx: 15, ry: 9, fill: c }, g);
+  el('ellipse', { cx: -4, cy: -2, rx: 6, ry: 3, fill: '#ffffff', opacity: .45 }, g);
+  petals.push({ g, x: R(-40, 1120), t0: R(N_IN - 1, N_IN + 16), v: R(150, 260), amp: R(30, 90), f: R(.6, 1.3), r: R(0, 360), rs: R(-120, 120), sc: R(.7, 1.5) });
+}
+function sparkleWindow(t, a, b) { return lin(t, a, a + .5) * (1 - lin(t, b - .6, b)); }
+function renderFx(t) {
+  // sparkles twinkle around عبد الله and رفيف, and softly at the very end
+  const k = Math.max(sparkleWindow(t, 8.2, 12.2) * .6, sparkleWindow(t, N_IN + .4, 26.0), sparkleWindow(t, 35.8, 39) * .8);
+  for (const s of sparks) {
+    const ph = ((t * s.sp + s.t0) % 1);
+    const tw = Math.sin(ph * Math.PI);
+    const yy = s.y + Math.sin(t * .7 + s.wave) * 10;
+    s.g.setAttribute('transform', `translate(${s.x} ${yy}) rotate(${t * 40 * s.sp}) scale(${s.sc * tw})`);
+    s.g.setAttribute('opacity', k * tw);
+  }
+  // falling petals during and after the name reveal
+  const pk = 1 - lin(t, 37.5, 39);
+  for (const p of petals) {
+    const dt = t - p.t0;
+    if (dt < 0) { p.g.setAttribute('opacity', 0); continue; }
+    const y = -40 + dt * p.v;
+    const x = p.x + Math.sin(dt * p.f) * p.amp;
+    p.g.setAttribute('transform', `translate(${x} ${y}) rotate(${p.r + dt * p.rs}) scale(${p.sc} ${p.sc * (.6 + .4 * Math.abs(Math.sin(dt * 2 * p.f)))})`);
+    p.g.setAttribute('opacity', (y > 1960 ? 0 : .9) * pk);
+  }
+}
+
+// ---------------------------------------------------------------- frame
+const stage = document.getElementById('stage');
+window.render = function (t) {
+  renderFlora(t, 1);
+  renderLines(t);
+  renderName(t);
+  renderFx(t);
+  // gentle fade in from white / fade out to white
+  const fi = lin(t, 0, .6), fo = lin(t, TOTAL - 1.0, TOTAL);
+  stage.style.filter = `brightness(${1 + (1 - fi) * .25 + fo * .25})`;
+};
+window.TOTAL = TOTAL;
+window.render(0);
+</script>
+</body>
+</html>
