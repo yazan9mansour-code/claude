@@ -1,0 +1,13 @@
+{
+  "id": "P002",
+  "buys": true,
+  "purchases_first_month": 4,
+  "reason_code": "convenience",
+  "reason": "I need somewhere with Wi-Fi and seats to study until late, and 70 seats open till midnight is exactly that, so I'd try it. A 5.0 rating looks good, but I'd go once or twice a week and order the cheapest thing, not every day.",
+  "objection": "3.50 for a latte is too much if I'm there every day studying, and 37 reviews isn't many. A perfect 5.0 from that few makes me wonder if it's mostly friends.",
+  "would_change_my_mind": "A student or regulars deal, like a loyalty card or a cheaper refill when I'm sitting there for hours, would get me in most days instead of once a week.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 2.0,
+  "price_expensive": 3.0,
+  "price_too_expensive": 4.0
+}

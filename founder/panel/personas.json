@@ -1,0 +1,222 @@
+[
+ {
+  "id": "P001",
+  "name": "Omar",
+  "age": 18,
+  "segment": "Staff member of a shop in the same complex",
+  "income": 6000,
+  "behaviour": "Price-conscious daily drinker",
+  "behaviour_how": "Drinks 1-2 coffees a day and counts every dinar; often makes Turkish or instant coffee at work for free.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you have a long commute through the 7th Circle traffic"
+ },
+ {
+  "id": "P002",
+  "name": "Raj",
+  "age": 26,
+  "segment": "Professional or manager who meets clients and friends",
+  "income": 21000,
+  "behaviour": "Reads Google reviews first",
+  "behaviour_how": "Checks ratings and number of reviews before trying a new place.",
+  "objection": "3.50 JOD for a latte is a lot if I buy every day",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P003",
+  "name": "Emil",
+  "age": 35,
+  "segment": "University student or young person who hangs out at cafes",
+  "income": 3000,
+  "behaviour": "Delivery orderer",
+  "behaviour_how": "Orders coffee to the office through Talabat or Careem, compares delivery fees.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you meet friends on Thursday nights before the weekend"
+ },
+ {
+  "id": "P004",
+  "name": "Owen",
+  "age": 22,
+  "segment": "Staff member of a shop in the same complex",
+  "income": 6000,
+  "behaviour": "Evening hangout with friends",
+  "behaviour_how": "Goes out after 7pm with friends, sits for 2-3 hours, cares about the vibe and seating.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you have a 30-minute lunch break and stay near the office"
+ },
+ {
+  "id": "P005",
+  "name": "Sana",
+  "age": 38,
+  "segment": "Office employee working in or next to the complex",
+  "income": 12000,
+  "behaviour": "Price-conscious daily drinker",
+  "behaviour_how": "Drinks 1-2 coffees a day and counts every dinar; often makes Turkish or instant coffee at work for free.",
+  "objection": "Qahwa BLK is right there and I already know it",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P006",
+  "name": "Maya",
+  "age": 45,
+  "segment": "Office employee working in or next to the complex",
+  "income": 13000,
+  "behaviour": "Price-conscious daily drinker",
+  "behaviour_how": "Drinks 1-2 coffees a day and counts every dinar; often makes Turkish or instant coffee at work for free.",
+  "objection": "Will the coffee be consistent, or just okay?",
+  "habit": "you order lunch to the office on Talabat most days"
+ },
+ {
+  "id": "P007",
+  "name": "Selin",
+  "age": 43,
+  "segment": "Staff member of a shop in the same complex",
+  "income": 6000,
+  "behaviour": "Trend and Instagram drinker",
+  "behaviour_how": "Tries new signature and iced drinks and posts them.",
+  "objection": "Only 37 reviews, I've never heard of it",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P008",
+  "name": "Ruby",
+  "age": 30,
+  "segment": "Office employee working in or next to the complex",
+  "income": 7000,
+  "behaviour": "Laptop worker or student",
+  "behaviour_how": "Needs Wi-Fi and a plug, sits for hours, orders one or two drinks.",
+  "objection": "Delivery fees make it too expensive",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P009",
+  "name": "Nora",
+  "age": 19,
+  "segment": "Professional or manager who meets clients and friends",
+  "income": 19000,
+  "behaviour": "Price-conscious daily drinker",
+  "behaviour_how": "Drinks 1-2 coffees a day and counts every dinar; often makes Turkish or instant coffee at work for free.",
+  "objection": "3.50 JOD for a latte is a lot if I buy every day",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P010",
+  "name": "Fatima",
+  "age": 23,
+  "segment": "Office employee working in or next to the complex",
+  "income": 7000,
+  "behaviour": "Laptop worker or student",
+  "behaviour_how": "Needs Wi-Fi and a plug, sits for hours, orders one or two drinks.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you work on the 7th Circle and take a break around 11am"
+ },
+ {
+  "id": "P011",
+  "name": "Tariq",
+  "age": 21,
+  "segment": "University student or young person who hangs out at cafes",
+  "income": 2000,
+  "behaviour": "Morning grab-and-go",
+  "behaviour_how": "Buys one coffee on the way to work, wants it fast, usually from a chain like Qahwa BLK.",
+  "objection": "3.50 JOD for a latte is a lot if I buy every day",
+  "habit": "you have a 30-minute lunch break and stay near the office"
+ },
+ {
+  "id": "P012",
+  "name": "Felix",
+  "age": 21,
+  "segment": "Office employee working in or next to the complex",
+  "income": 15000,
+  "behaviour": "Evening hangout with friends",
+  "behaviour_how": "Goes out after 7pm with friends, sits for 2-3 hours, cares about the vibe and seating.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you work on the 7th Circle and take a break around 11am"
+ },
+ {
+  "id": "P013",
+  "name": "Zoe",
+  "age": 20,
+  "segment": "Professional or manager who meets clients and friends",
+  "income": 32000,
+  "behaviour": "Reads Google reviews first",
+  "behaviour_how": "Checks ratings and number of reviews before trying a new place.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P014",
+  "name": "Dev",
+  "age": 22,
+  "segment": "University student or young person who hangs out at cafes",
+  "income": 4000,
+  "behaviour": "Evening hangout with friends",
+  "behaviour_how": "Goes out after 7pm with friends, sits for 2-3 hours, cares about the vibe and seating.",
+  "objection": "I didn't even know there was a cafe in this complex",
+  "habit": "you have a 30-minute lunch break and stay near the office"
+ },
+ {
+  "id": "P015",
+  "name": "Yusuf",
+  "age": 29,
+  "segment": "Professional or manager who meets clients and friends",
+  "income": 24000,
+  "behaviour": "Delivery orderer",
+  "behaviour_how": "Orders coffee to the office through Talabat or Careem, compares delivery fees.",
+  "objection": "Qahwa BLK is right there and I already know it",
+  "habit": "you study for exams in cafes with Wi-Fi"
+ },
+ {
+  "id": "P016",
+  "name": "Theo",
+  "age": 32,
+  "segment": "Office employee working in or next to the complex",
+  "income": 10000,
+  "behaviour": "Morning grab-and-go",
+  "behaviour_how": "Buys one coffee on the way to work, wants it fast, usually from a chain like Qahwa BLK.",
+  "objection": "I didn't even know there was a cafe in this complex",
+  "habit": "you work on the 7th Circle and take a break around 11am"
+ },
+ {
+  "id": "P017",
+  "name": "Alma",
+  "age": 22,
+  "segment": "Office employee working in or next to the complex",
+  "income": 7000,
+  "behaviour": "Morning grab-and-go",
+  "behaviour_how": "Buys one coffee on the way to work, wants it fast, usually from a chain like Qahwa BLK.",
+  "objection": "I didn't even know there was a cafe in this complex",
+  "habit": "you order lunch to the office on Talabat most days"
+ },
+ {
+  "id": "P018",
+  "name": "Freya",
+  "age": 26,
+  "segment": "University student or young person who hangs out at cafes",
+  "income": 3000,
+  "behaviour": "Laptop worker or student",
+  "behaviour_how": "Needs Wi-Fi and a plug, sits for hours, orders one or two drinks.",
+  "objection": "Delivery fees make it too expensive",
+  "habit": "you have a long commute through the 7th Circle traffic"
+ },
+ {
+  "id": "P019",
+  "name": "Harper",
+  "age": 34,
+  "segment": "Office employee working in or next to the complex",
+  "income": 6000,
+  "behaviour": "Trend and Instagram drinker",
+  "behaviour_how": "Tries new signature and iced drinks and posts them.",
+  "objection": "I make coffee at the office for free",
+  "habit": "you meet friends on Thursday nights before the weekend"
+ },
+ {
+  "id": "P020",
+  "name": "Emma",
+  "age": 22,
+  "segment": "University student or young person who hangs out at cafes",
+  "income": 4000,
+  "behaviour": "Morning grab-and-go",
+  "behaviour_how": "Buys one coffee on the way to work, wants it fast, usually from a chain like Qahwa BLK.",
+  "objection": "Qahwa BLK is right there and I already know it",
+  "habit": "you have a 30-minute lunch break and stay near the office"
+ }
+]

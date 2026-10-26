@@ -1,0 +1,13 @@
+{
+  "id": "P009",
+  "buys": true,
+  "purchases_first_month": 4,
+  "reason_code": "need",
+  "reason": "I need somewhere with Wi-Fi and seats to study, and open till midnight is perfect before exams. But I'd order the 2 JOD Turkish coffee or a medium Americano and make it last for hours, not buy a latte every day.",
+  "objection": "3.50 for a latte is too much for me, and if it's packed with office people at lunch I won't get a seat or they'll want me to keep ordering.",
+  "would_change_my_mind": "A student discount or a loyalty card (like every 6th coffee free) would make me come several times a week instead of once.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 1.75,
+  "price_expensive": 2.75,
+  "price_too_expensive": 3.75
+}

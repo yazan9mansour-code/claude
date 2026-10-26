@@ -1,0 +1,13 @@
+{
+  "id": "P012",
+  "buys": true,
+  "purchases_first_month": 3,
+  "reason_code": "convenience",
+  "reason": "During the day I drink the free office coffee, so I'm not paying 3 JOD at 11am. But it's right next to work, open till midnight and has 70 seats, so it could work for evenings with my friends. I'd try it a few times and see if the vibe holds up.",
+  "objection": "It's in an office complex, so at night it might feel dead or like a work cafe instead of somewhere to sit with friends for three hours. And 3.50 to 4 JOD a drink every time I go out adds up on my salary.",
+  "would_change_my_mind": "If I go once in the evening and it's empty or the seating is uncomfortable, I'd stop going. If there was a deal for groups or a cheaper refill when you sit for a long time, I'd go every week.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 2.0,
+  "price_expensive": 3.5,
+  "price_too_expensive": 4.5
+}

@@ -1,0 +1,38 @@
+{
+  "business": "Moro Coffee House, a specialty coffee shop with 70 seats in an office-and-shops complex at Prince Talal bin Mohammad Square (7th Circle), Amman, Jordan",
+  "target": "People who work in, visit or pass the 7th Circle complex in Amman (office staff, shop staff, students, professionals), 18 to 45, who drink coffee most days. All money is in Jordanian dinars (JOD); wherever you see $ read it as JOD",
+  "where": "Amman, Prince Talal bin Mohammad Square (7th Circle)",
+  "age": [18, 45],
+  "segments": [
+    {"name": "Office employee working in or next to the complex", "share": 0.40, "income": [6000, 15000]},
+    {"name": "University student or young person who hangs out at cafes", "share": 0.25, "income": [1500, 5000]},
+    {"name": "Professional or manager who meets clients and friends", "share": 0.20, "income": [15000, 35000]},
+    {"name": "Staff member of a shop in the same complex", "share": 0.15, "income": [4000, 7500]}
+  ],
+  "behaviours": [
+    {"name": "Morning grab-and-go", "share": 0.20, "how": "Buys one coffee on the way to work, wants it fast, usually from a chain like Qahwa BLK."},
+    {"name": "Price-conscious daily drinker", "share": 0.18, "how": "Drinks 1-2 coffees a day and counts every dinar; often makes Turkish or instant coffee at work for free."},
+    {"name": "Evening hangout with friends", "share": 0.16, "how": "Goes out after 7pm with friends, sits for 2-3 hours, cares about the vibe and seating."},
+    {"name": "Laptop worker or student", "share": 0.12, "how": "Needs Wi-Fi and a plug, sits for hours, orders one or two drinks."},
+    {"name": "Delivery orderer", "share": 0.12, "how": "Orders coffee to the office through Talabat or Careem, compares delivery fees."},
+    {"name": "Trend and Instagram drinker", "share": 0.12, "how": "Tries new signature and iced drinks and posts them."},
+    {"name": "Reads Google reviews first", "share": 0.10, "how": "Checks ratings and number of reviews before trying a new place."}
+  ],
+  "objections": [
+    "Qahwa BLK is right there and I already know it",
+    "3.50 JOD for a latte is a lot if I buy every day",
+    "I didn't even know there was a cafe in this complex",
+    "Only 37 reviews, I've never heard of it",
+    "I make coffee at the office for free",
+    "Delivery fees make it too expensive",
+    "Will the coffee be consistent, or just okay?"
+  ],
+  "habits": [
+    "you work on the 7th Circle and take a break around 11am",
+    "you have a long commute through the 7th Circle traffic",
+    "you meet friends on Thursday nights before the weekend",
+    "you study for exams in cafes with Wi-Fi",
+    "you have a 30-minute lunch break and stay near the office",
+    "you order lunch to the office on Talabat most days"
+  ]
+}

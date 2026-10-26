@@ -1,0 +1,13 @@
+{
+  "id": "P015",
+  "buys": true,
+  "purchases_first_month": 2,
+  "reason_code": "habit",
+  "reason": "Qahwa BLK is my default and I already know what I get there, but 70 seats with Wi-Fi open until midnight is useful for exam study nights, so I'd try Moro a couple of times when my usual place is full. On Talabat I'd only order if the delivery fee beats what I pay now.",
+  "objection": "Why switch from a place I already trust? 37 reviews is not many, and with delivery fees on top a 3.50 latte stops being cheap on my salary.",
+  "would_change_my_mind": "A free or low delivery fee on Talabat/Careem, or a study deal like a refill or discount for staying a few hours, would make it my regular spot.",
+  "price_too_cheap": 1.25,
+  "price_cheap": 2.25,
+  "price_expensive": 3.50,
+  "price_too_expensive": 4.50
+}

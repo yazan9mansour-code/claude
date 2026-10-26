@@ -1,0 +1,13 @@
+{
+  "id": "P005",
+  "buys": true,
+  "purchases_first_month": 2,
+  "reason_code": "need",
+  "reason": "At work I make my own Turkish coffee for free, so I would not come here for my daily cup. But I need a quiet seat with Wi-Fi to study for my exams in the evenings, and a 2-dinar Turkish coffee to sit until late is something I could try a couple of times instead of Qahwa BLK.",
+  "objection": "Qahwa BLK is right there and I already know it. Most of the menu is 3 to 4 dinars, which is too much for me to spend often, and I don't know yet if they will let me sit for hours with one cheap coffee or if the Wi-Fi is any good.",
+  "would_change_my_mind": "A study deal, like a free refill or a cheaper second Turkish coffee or tea for people staying to study in the evening, would make me switch from Qahwa BLK and come every week.",
+  "price_too_cheap": 0.75,
+  "price_cheap": 1.5,
+  "price_expensive": 2.5,
+  "price_too_expensive": 3.5
+}

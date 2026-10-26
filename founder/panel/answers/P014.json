@@ -1,0 +1,13 @@
+{
+  "id": "P014",
+  "buys": true,
+  "purchases_first_month": 2,
+  "reason_code": "convenience",
+  "reason": "Open till midnight with 70 seats and Wi-Fi is exactly what my friends and I look for at night, so I'd try it a couple of times if someone suggests it. But on my budget I'd order the cheapest thing, like a Turkish coffee or a medium Americano, and stretch it over three hours.",
+  "objection": "I didn't even know there was a cafe in this complex, and an office building at 9pm could feel dead and corporate, not like a place to hang out. Plus 3.50 for a Spanish latte adds up fast when I only have a few dinars a week for going out.",
+  "would_change_my_mind": "Seeing photos or hearing from friends that it actually has a good evening crowd and comfortable seating, maybe with a student deal or shisha-free chill vibe after 7pm.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 1.75,
+  "price_expensive": 3.0,
+  "price_too_expensive": 4.0
+}

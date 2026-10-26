@@ -1,0 +1,13 @@
+{
+  "id": "P003",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I make coffee at the office for free, and on what I earn three dinars for a latte, plus a Talabat delivery fee on top, is just not something I can do in a normal week. If we meet on Thursday we go wherever is cheapest or someone's place.",
+  "objection": "It's 3 to 4 JOD a cup before delivery fees, and I already have free coffee. A 5.0 rating doesn't change what's in my pocket.",
+  "would_change_my_mind": "A student or group deal for Thursday nights, like a coffee for around 1.50 JOD, or free delivery to the complex offices.",
+  "price_too_cheap": 0.5,
+  "price_cheap": 1.25,
+  "price_expensive": 2.0,
+  "price_too_expensive": 3.0
+}

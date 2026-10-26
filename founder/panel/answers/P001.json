@@ -1,0 +1,13 @@
+{
+  "id": "P001",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I make Turkish or instant coffee at the shop for free, and 3 dinars for a latte is a big chunk of what I earn in a day. Maybe once with friends for something special, but not as a normal thing.",
+  "objection": "It's nice, but I can't spend 3 dinars on a coffee when I get it for nothing at work.",
+  "would_change_my_mind": "A staff discount for people who work in the complex, like a Turkish coffee or small Americano for under 1.5 JOD.",
+  "price_too_cheap": 0.5,
+  "price_cheap": 1.0,
+  "price_expensive": 1.75,
+  "price_too_expensive": 2.5
+}

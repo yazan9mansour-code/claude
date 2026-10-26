@@ -1,0 +1,13 @@
+{
+  "id": "P019",
+  "buys": true,
+  "purchases_first_month": 3,
+  "reason_code": "other",
+  "reason": "I'd try the Moro Fizzy or Moro Frappe once to post it, and it's right there for a Thursday-night meetup with friends since it's open till midnight with lots of seats. My weekday coffee stays the free one at the office, though.",
+  "objection": "I make coffee at the office for free, and on my salary 3.50 to 4 dinars for one iced drink adds up fast, so this can only be a treat, not a habit.",
+  "would_change_my_mind": "A Thursday-evening deal for groups or a cheaper signature drink around 2.50 would get me coming every week instead of a couple of times a month.",
+  "price_too_cheap": 1.00,
+  "price_cheap": 2.00,
+  "price_expensive": 3.50,
+  "price_too_expensive": 4.50
+}

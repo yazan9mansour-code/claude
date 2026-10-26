@@ -1,0 +1,13 @@
+{
+  "id": "P008",
+  "buys": true,
+  "purchases_first_month": 4,
+  "reason_code": "convenience",
+  "reason": "It's right where I work, it has free Wi-Fi and 70 seats, and it's open until midnight, so I can sit and study after work. I'd walk in, not order delivery, and make one Americano or Turkish coffee last a few hours.",
+  "objection": "On my salary 3 dinars a drink adds up fast, so I can only treat myself about once a week. I'm also not sure they're fine with someone sitting for hours on one cheap drink, or that there are enough plugs.",
+  "would_change_my_mind": "A student or study deal, like a cheaper Americano with a refill or a stamp card, would get me in two or three times a week instead of once.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 1.75,
+  "price_expensive": 3.0,
+  "price_too_expensive": 4.0
+}

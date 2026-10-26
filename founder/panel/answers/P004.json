@@ -1,0 +1,13 @@
+{
+  "id": "P004",
+  "buys": true,
+  "purchases_first_month": 3,
+  "reason_code": "convenience",
+  "reason": "During the day I just make coffee at work for free, so I'm not paying 3 dinars for a latte on my break. But it's right here, it's open till midnight and it has 70 seats, so it could be where my friends and I sit some evenings, if the vibe is good.",
+  "objection": "On my salary 3 to 4 dinars for one drink adds up fast, especially when we sit for 2 or 3 hours and someone wants a second round. I don't know yet if the seating and atmosphere are actually good for a group in the evening, or if it's just an office coffee place.",
+  "would_change_my_mind": "A staff discount for people who work in the complex, or an evening deal for groups, like a cheaper second drink or a shisha-free hangout corner with a good vibe.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 1.75,
+  "price_expensive": 2.75,
+  "price_too_expensive": 3.75
+}

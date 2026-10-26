@@ -1,0 +1,13 @@
+{
+  "id": "P011",
+  "buys": true,
+  "purchases_first_month": 2,
+  "reason_code": "price",
+  "reason": "I might try it a couple of times, probably the Turkish coffee at 2 JOD or a medium latte when I want to sit with the Wi-Fi and study. But I can't make it my daily coffee on my budget, so my usual cheap grab-and-go stays.",
+  "objection": "3 to 3.50 JOD for a latte is too much if I buy every day, and the 5.0 rating is only 37 reviews so I don't know if it's really better than Qahwa BLK.",
+  "would_change_my_mind": "A student discount or a loyalty card that brings a medium latte down to around 2.25 JOD so I could buy it most days.",
+  "price_too_cheap": 1.0,
+  "price_cheap": 1.75,
+  "price_expensive": 2.75,
+  "price_too_expensive": 3.75
+}

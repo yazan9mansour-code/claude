@@ -1,0 +1,13 @@
+{
+  "id": "P010",
+  "buys": true,
+  "purchases_first_month": 2,
+  "reason_code": "price",
+  "reason": "I make coffee at the office for free, and 3 dinars for a latte is a real chunk of what I earn, so I can't make it a habit. Maybe once or twice a month I'd go with a colleague at my 11am break as a treat, or on payday.",
+  "objection": "It's just too expensive for me to buy coffee every day when the office one costs nothing. A daily 3 JOD latte would eat a big part of my salary.",
+  "would_change_my_mind": "A cheap everyday option, like a 1.50 to 2 JOD coffee or a loyalty card for people who work in the complex, would make me come more often.",
+  "price_too_cheap": 0.75,
+  "price_cheap": 1.5,
+  "price_expensive": 2.5,
+  "price_too_expensive": 3.5
+}

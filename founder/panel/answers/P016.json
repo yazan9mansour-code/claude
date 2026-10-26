@@ -1,0 +1,13 @@
+{
+  "id": "P016",
+  "buys": true,
+  "purchases_first_month": 2,
+  "reason_code": "convenience",
+  "reason": "I didn't even know it was there, but if it's in my own complex I'd try it a couple of times on my 11am break instead of walking out. My morning coffee stays at Qahwa BLK on the way in, though, because it's quick and cheaper.",
+  "objection": "2.80 for an Americano is more than I pay at the chain, and I don't know if they're fast enough for a ten-minute break.",
+  "would_change_my_mind": "A cheaper takeaway coffee for people who work in the complex, around 2 JOD, and a promise it's ready in a couple of minutes would make it my daily stop.",
+  "price_too_cheap": 1.00,
+  "price_cheap": 1.75,
+  "price_expensive": 2.75,
+  "price_too_expensive": 3.50
+}

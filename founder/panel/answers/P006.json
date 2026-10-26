@@ -1,0 +1,13 @@
+{
+  "id": "P006",
+  "buys": false,
+  "purchases_first_month": 0,
+  "reason_code": "price",
+  "reason": "I make Turkish coffee at my desk for nothing, and 3 dinars for a latte is a big piece of my day's pay. Even their cheapest Turkish coffee at 2.00 is hard to justify when mine is free and good enough.",
+  "objection": "It costs too much for something I already have for free, and a 5.0 from 37 reviews doesn't tell me the coffee will be the same good every day or just okay.",
+  "would_change_my_mind": "A cheap office deal, like a Turkish coffee or small Americano under 1.50 or a loyalty card with a free cup, so I could treat myself once or twice a week without feeling it.",
+  "price_too_cheap": 0.5,
+  "price_cheap": 1.0,
+  "price_expensive": 1.75,
+  "price_too_expensive": 2.5
+}
